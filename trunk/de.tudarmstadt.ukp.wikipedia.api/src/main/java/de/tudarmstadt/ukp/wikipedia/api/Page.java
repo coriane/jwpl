@@ -13,18 +13,21 @@
 package de.tudarmstadt.ukp.wikipedia.api;
 
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
+import org.sweble.wikitext.engine.CompiledPage;
+import org.sweble.wikitext.engine.PageId;
+import org.sweble.wikitext.engine.PageTitle;
+import org.sweble.wikitext.engine.utils.SimpleWikiConfiguration;
 
 import de.tudarmstadt.ukp.wikipedia.api.exception.WikiApiException;
 import de.tudarmstadt.ukp.wikipedia.api.exception.WikiPageNotFoundException;
 import de.tudarmstadt.ukp.wikipedia.api.exception.WikiTitleParsingException;
 import de.tudarmstadt.ukp.wikipedia.api.hibernate.PageDAO;
+import de.tudarmstadt.ukp.wikipedia.api.sweble.PlainTextConverter;
 import de.tudarmstadt.ukp.wikipedia.parser.Link;
 import de.tudarmstadt.ukp.wikipedia.parser.ParsedPage;
 import de.tudarmstadt.ukp.wikipedia.util.UnmodifiableArraySet;
@@ -558,88 +561,148 @@ public class Page
 	 * Returns the Wikipedia article as plain text. Page.getText() returns the Wikipedia article
 	 * with all Wiki markup.
 	 *
-	 * @return The plain text of a Wikipedia article without all markup.
-	 * @throws WikiApiException
-	 */
-	public String getPlainText()
-		throws WikiApiException
-	{
-		ParsedPage pp = getParsedPage();
-		if (pp == null) {
-			return "";
+	 * @return The plain text of a Wikipedia article without allCompiledPage cp;
+		String plainText;
+		try{
+			SimpleWikiConfiguration config = new SimpleWikiConfiguration("classpath:/org/sweble/wikitext/engine/SimpleWikiConfiguration.xml");
+			org.sweble.wikitext.engine.Compiler compiler = new org.sweble.wikitext.engine.Compiler(config);
+
+			PageTitle pageTitle = PageTitle.make(config, this.getTitle().toString());
+			PageId pageId = new PageId(pageTitle, -1);
+			// Compile the retrieved page
+			cp = compiler.postprocess(pageId, this.getText(), null);
+
+			// Render the compiled page as text
+			PlainTextConverter textConverter = new PlainTextConverter(config, Integer.MAX_VALUE);
+			plainText = (String) textConverter.go(cp.getPage());
+		}catch(Exception e){
+			throw new WikiApiException(e.getMessage());
 		}
-		return getTitle().getPlainTitle() + " " + pp.getText();
+		return plainText;
 	}
 
-	/**
-	 * Returns a ParsedPage object as would have been returned by the JWPL Parser.
-	 *
+	public CompiledPage getCompiledPage() throws WikiApiException
+	{
+		CompiledPage cp;
+		try{
+			SimpleWikiConfiguration config = new SimpleWikiConfiguration("classpath:/org/sweble/wikitext/engine/SimpleWikiConfiguration.xml");
+			org.sweble.wikitext.engine.Compiler compiler = new org.sweble.wikitext.engine.Compiler(config);
+
+			PageTitle pageTitle = PageTitle.make(config, this.getTitle().toString());
+			PageId pageId = new PageId(pageTitle, -1);
+			// Compile the retrieved page
+			cp = compiler.postprocess(pageId, this.getText(), null);
+		}catch(Exception e){
+			throw new WikiApiException(e.getMessage());
+		}
+		return cp;
+	}
+
+	/*
+	 * The methods getInlinkAnchors() and getOutLinkAnchors() have to be migrated to the SWEBLE parser or the code has to be
+	 * moved to the parser.
+	 */
+
+
+//	/**
+//()) {
+			ParsedPage pp = p.getParsedPage();
+			if (pp == null) {
+				return ipage's title.
+//)) {
+				String pageTitle = hibernatePage.getName();
+
+				String anchorText = l.getText();
+			// *
 	 * @return A ParsedPage object as would have been returned by the JWPL Parser.
 	 */
-	public ParsedPage getParsedPage()
-	{
+	public ParsedPage getParsedPag//	 *
+//	{
 		return wiki.getParser().parse(getText());
 	}
 
 	/**
-	 * Note that this method only returns the anchors that are not equal to the page's title.
-	 * Anchors might contain references to sections in an article in the form of "Page#Section".
-	 * If you need the plain title, e.g. for checking whether the page exists in Wikipedia, the Title object can be used.
-	 *
-	 * @return A set of strings used as anchor texts in links pointing to that page.
-	 * @throws WikiTitleParsingException
-	 */
-	public Set<String> getInlinkAnchors()
-		throws WikiTitleParsingException
-	{
-		Set<String> inAnchors = new HashSet<String>();
-		for (Page p : getInlinks()) {
+	 * Note that this method //	 * @throws WikiTitleParsingException
+//	 */
+//	public Set<String> getInlinkAnchors()
+//		throws WikiTitleParsingException
+//	{
+//		Set<String> inAnchors = new HashSet<String>();
+//		for (Page p : getInlinks()) {
+//			ParsedPage pp = p.getParsedPage();
+//			if (pp == null) {
+//				return inAnchors;
+//			}
+//			for (Link l : pp.getLinks()) {
+//				String pageTitle = hibernatePage.getName();
+//
+//				String anchorText = l.getText();
+//				if (l.getTarget().equals(pageTitle) && !anchorText.equals(pageTitle)) {
+//					inAnchors.add(anchorText);
+//				}
+//			}
+//		}
+//		return inAnchors;
+//	}
+//
+//	/**
+//()) {
 			ParsedPage pp = p.getParsedPage();
 			if (pp == null) {
 				return inAnchors;
 			}
-			for (Link l : pp.getLinks()) {
+			//	 * they are pointing to.
+//)) {
 				String pageTitle = hibernatePage.getName();
 
 				String anchorText = l.getText();
-				if (l.getTarget().equals(pageTitle) && !anchorText.equals(pageTitle)) {
-					inAnchors.add(anchorText);
-				}
-			}
-		}
-		return inAnchors;
-	}
-
-	/**
-	 * Note that this method only returns the anchors that are not equal to the title of the page
-	 * they are pointing to.
-	 * Anchors might contain references to sections in an article in the form of "Page#Section".
-	 * If you need the plain title, e.g. for checking whether the page exists in Wikipedia, the Title object can be used.
-	 *
-	 * @return A mapping from the page titles of links in that page to the anchor texts used in the
-	 *         links.
-	 * @throws WikiTitleParsingException
+			// *
+	 * @return A ParsedPage object as would have been returned by the JWPL Parser.
 	 */
-	public Map<String, Set<String>> getOutlinkAnchors()
-		throws WikiTitleParsingException
-	{
-		Map<String, Set<String>> outAnchors = new HashMap<String, Set<String>>();
-		ParsedPage pp = getParsedPage();
-		if (pp == null) {
+	public ParsedPage getParsedPag//	 *
+//	 * @return A mapping from the page titles of links in that page to the anchor texts used in the
+//	 *         links.
+//	 * @throws WikiTitleParsingException
+//	 */
+//	public Map<String, Set<String>> getOutlinkAnchors()
+//		throws WikiTitleParsingException
+//	{
+//		Map<String, Set<String>> outAnchors = new HashMap<String, Set<String>>();
+//		ParsedPage pp = getParsedPage();
+//		if (pp == null) {
+//			return outAnchors;
+//		}
+//		for (Link l : pp.getLinks()) {
+//			if (l.getTarget().length() == 0) {
+//				continue;
+//			}
+//
+//tleParsingException
+	 */
+	public Map<String, Set<String>> getOutli//			if (!l.getType().equals(Link.type.EXTERNAL) && !l.getType().equals(Link.type.IMAGE)
+//					&& !l.getType().equals(Link.type.AUDIO) && !l.getType().equals(Link.type.VIDEO)
+// null) {
 			return outAnchors;
 		}
 		for (Link l : pp.getLinks()) {
-			if (l.getTarget().length() == 0) {
-				continue;
-			}
-
-			String targetTitle = new Title(l.getTarget()).getPlainTitle();
-			if (!l.getType().equals(Link.type.EXTERNAL) && !l.getType().equals(Link.type.IMAGE)
-					&& !l.getType().equals(Link.type.AUDIO) && !l.getType().equals(Link.type.VIDEO)
-					&& !targetTitle.contains(":")) // Wikipedia titles only contain colons if they
-													// are categories or other meta data
-			{
-				String anchorText = l.getText();
+			if (l.getTarg//													// are categories or other meta data
+//			{
+//				String anchorText = l.getText();
+//				if (!anchorText.equals(targetTitle)) {
+//					Set<String> anchors;
+//					if (outAnchors.containsKey(targetTitle)) {
+//						anchors = outAnchors.get(targetTitle);
+//					}
+//					else {
+//						anchors = new HashSet<String>();
+//					}
+//					anchors.add(anchorText);
+//					outAnchors.put(targetTitle, anchors);
+//				}
+//			}
+//		}
+//		return outAnchors;
+//g anchorText = l.getText();
 				if (!anchorText.equals(targetTitle)) {
 					Set<String> anchors;
 					if (outAnchors.containsKey(targetTitle)) {
@@ -677,18 +740,3 @@ public class Page
 			sb.append("  " + redirect + LF);
 		}
 		sb.append("Categories" + LF);
-		for (Category category : getCategories()) {
-			sb.append("  " + category.getTitle() + LF);
-		}
-		sb.append("In-Links" + LF);
-		for (Page inLink : getInlinks()) {
-			sb.append("  " + inLink.getTitle() + LF);
-		}
-		sb.append("Out-Links" + LF);
-		for (Page outLink : getOutlinks()) {
-			sb.append("  " + outLink.getTitle() + LF);
-		}
-
-		return sb.toString();
-	}
-}
