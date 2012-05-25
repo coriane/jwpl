@@ -622,7 +622,7 @@ public cprivate final String SIMPLE_WIKI_CONFIG = "classpath:/org/sweble/wikitex
 			Compiler compiler = new Compiler(config);
 			cp = compiler.postprocess(pageId, this.getText(), null);
 		}catch(Exception e){
-			throw new WikiApiException(e.getMessage());
+			throw new WikiApiException(e);
 		}
 		return cp;
 	}
