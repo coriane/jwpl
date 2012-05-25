@@ -42,7 +42,7 @@ import de.tudarmstadt.ukp.wikipedia.util.UnmodifiableArraySet;
  *
  */
 // Adapter class for hidding hibernate session management from the user.
-public cprivate final String SIMPLE_WIKI_CONFIG = "classpath:/org/sweble/wikitext/engine/SimpleWikiConfiguration.xml"ic class Page
+public class Page
 	implements WikiConstants
 {
 	private final Wikipedia wiki;
@@ -575,7 +575,7 @@ public cprivate final String SIMPLE_WIKI_CONFIG = "classpath:/org/sweble/wikitex
 		try{
 			//Configure the PlainTextConverter for plain text parsing
 			plain = new PlainTextConverter(
-					new SimpleWikiConfiguration(SIMPLE_WIKI_CONFIG),
+					new SimpleWikiConfiguration(SWEBLE_CONFIG),
 					false);
 		}catch(IOException e){
 			throw new WikiApiException(e);
@@ -613,7 +613,7 @@ public cprivate final String SIMPLE_WIKI_CONFIG = "classpath:/org/sweble/wikitex
 	{
 		CompiledPage cp;
 		try{
-			SimpleWikiConfiguration config = new SimpleWikiConfiguration(SIMPLE_WIKI_CONFIG);
+			SimpleWikiConfiguration config = new SimpleWikiConfiguration(SWEBLE_CONFIG);
 
 			PageTitle pageTitle = PageTitle.make(config, this.getTitle().toString());
 			PageId pageId = new PageId(pageTitle, -1);
