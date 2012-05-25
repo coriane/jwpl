@@ -12,7 +12,6 @@
  ******************************************************************************/
 package de.tudarmstadt.ukp.wikipedia.api;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
@@ -571,16 +570,8 @@ public class Page
 	 * @return The plain text of a Wikipedia articleicle
 	 * with all Wiki markup.
 	 *
-	 * @return The plain text of a Wikipedia article without allPlainTextConverter plain;
-		try{
-			//Configure the PlainTextConverter for plain text parsing
-			plain = new PlainTextConverter(
-					new SimpleWikiConfiguration(SWEBLE_CONFIG),
-					false);
-		}catch(IOException e){
-			throw new WikiApiException(e);
-		}
-		return (String) getParsedPage(plain);
+	 * @return The plain text of a Wikipedia article without all//Configure the PlainTextConverter for plain text parsing
+		return (String) parsePage(new PlainTextConverter());
 	}
 
 	/**
@@ -596,7 +587,7 @@ public class Page
 	 *         type of the go() method of your visitor.
 	 * @throws WikiApiException
 	 */
-	public Object getParsedPage(Visitor v) throws WikiApiException
+	public Object parsePage(Visitor v) throws WikiApiException
 	{
 		// Use the provided visitor to parse the page
 		return v.go(getCompiledPage().getPage());
