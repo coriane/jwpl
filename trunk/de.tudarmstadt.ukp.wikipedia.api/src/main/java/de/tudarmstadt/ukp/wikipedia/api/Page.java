@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.wikipedia.api.hibernate.PageDAO;
 import de.tudarmstadt.ukp.wikipedia.api.sweble.PlainTextConverter;
 import de.tudarmstadt.ukp.wikipedia.parser.Link;
 import de.tudarmstadt.ukp.wikipedia.parser.ParsedPage;
-import de.tudarmstadt.ukp.wikipedia.util.UnmodifiableArraySet;
+import de.tudarmstadt.ukp. @author Oliver Ferschkekp.wikipedia.util.UnmodifiableArraySet;
 
 /**
  * Represents a Wikipedia article page.
