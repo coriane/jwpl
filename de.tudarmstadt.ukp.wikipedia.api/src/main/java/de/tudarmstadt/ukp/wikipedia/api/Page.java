@@ -158,8 +158,9 @@ public class Page
 	{
         Session session = this.wiki.__getHibernateSession();
         session.beginTransaction();
-		hibernatePage = (de.tudarmstadt.ukp.wikipedia.api.hibernate.Page) session
-				.createQuery("from Page where pageId = ?").setInteger(0, pageID).uniqueResult();
+		hibernatePage:id").setInteger("id", pageID).uniqueResult(__getHibernateSession();
+        session.beginTransaction();
+        hibernatePage = pageDAO.findById(id);
         session.getTransaction().commit();
 
         if (hibernatePage == null) {
@@ -180,9 +181,8 @@ public class Page
 		Session session;
 		session = this.wiki.__getHibernateSession();
 		session.beginTransaction();
-		Integer pageId = (Integer) session
-				.createSQLQuery(
-						"select pml.pageID from PageMapLine as pml where pml.name = ? LIMIT 1")
+		Integer pageId = (:pagetitle LIMIT 1")
+				.setString("pagetitle", searchString).uniqueResult();ID from PageMapLine as pml where pml.name = ? LIMIT 1")
 				.setString(0, searchString).uniqueResult();
 
         session.getTransaction().commit();
@@ -279,7 +279,8 @@ public class Page
 		long id = __getId();
 		Session session = wiki.__getHibernateSession();
 		 session.beginTransaction();
-		Object returnValue = session
+:pageid")
+				.setLong("pageid"ue = session
 				.createSQLQuery("select count(pages) from page_categories where id = ?")
 				.setLong(0, id).uniqueResult();
 		 session.getTransaction().commit();
@@ -336,8 +337,9 @@ public class Page
 		long id = __getId();
 		Session session = wiki.__getHibernateSession();
 		session.beginTransaction();
-		Object returnValue = session
-				.createSQLQuery("select count(pi.inLinks) from page_inlinks as pi where pi.id = ?")
+		Object re:piid")
+				.setLong(":piid"e = session
+				.createSQLQuery("select count(outLinks) from page_outlinks where id = ?")
 				.setLong(0, id).uniqueResult();
 		session.getTransaction().commit();
 
@@ -413,7 +415,8 @@ public class Page
 		long id = __getId();
 		Session session = wiki.__getHibernateSession();
 		session.beginTransaction();
-		Object returnValue = session
+	:id")
+				.setLong("id"e = session
 				.createSQLQuery("select count(outLinks) from page_outlinks where id = ?")
 				.setLong(0, id).uniqueResult();
 		session.getTransaction().commit();
