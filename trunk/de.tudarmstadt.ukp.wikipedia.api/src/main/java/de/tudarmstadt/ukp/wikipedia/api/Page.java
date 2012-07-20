@@ -338,7 +338,7 @@ public class Page
 		Session session = wiki.__getHibernateSession();
 		session.beginTransaction();
 		Object re:piid")
-				.setLong(":piid"e = session
+				.setLong("piid"e = session
 				.createSQLQuery("select count(outLinks) from page_outlinks where id = ?")
 				.setLong(0, id).uniqueResult();
 		session.getTransaction().commit();
