@@ -102,15 +102,31 @@ public class Page
 	 *            The wikipedia object.
 	 * @param pName
 	 *            The name of the page.
-	 * @throws WikiApiException
-	 */
-	public Page(Wikipedia wiki, String pName)
-		throws WikiApiException
-	{
-		if (pName == null || pName.length() == 0) {
-			throw new WikiPageNotFoundException();
-		}
-		this.wiki = wiki;
+	 * this(wiki, pName, false);
+	}
+	
+	/**
+     * Creates a page object.
+     *
+     * @param wiki
+     *            The wikipedia object.
+     * @param pName
+     *            The name of the page.
+     * @param useExactTitle
+     *            Whether to use the exact title or try to guess the correct wiki-style title.
+     * @throws WikiApiException
+     */
+    public Page(Wikipedia wiki, String pName, boolean useExactTitle)
+        throws WikiApiException
+    {
+        if (pName == null || pName.length() == 0) {
+            throw new WikiPageNotFoundException();
+        }
+        this.wiki = wiki;
+        this.pageDAO = new PageDAO(wiki);
+        Title pageTitle = new Title(pName);
+        fetchByTitle(pageTitle, useExactTitle);
+    ;
 		this.pageDAO = new PageDAO(wiki);
 		Title pageTitle = new Title(pName);
 		fetchByTitle(pageTitle);
@@ -164,17 +180,19 @@ public class Page
         session.getTransaction().commit();
 
         if (hibernatePage == null) {
-            throw new WikiPageNotFoundException("No page with page id " + pageID + " was found.");
+             throw new WikiPageNotFoundException("No page with page id " + pageID + " was found.");
         }
 	}
 
 	/**
-	 * CAUTION: Only returns 1 result, even if several results are possible.
-	 *
-	 * @param pTitle
-	 * @throws WikiApiException
-	 */
-	private void fetchByTitle(Title pTitle)
+	 * CAUTION: Only returns 1 result, even if several results are p, boolean useExactTitle)
+		throws WikiApiException
+	{
+		String searchString = pTitle.getPlainTitle();
+		if (!useExactTitle) {
+		    searchString = pTitle.getWikiStyleTitle();
+		}
+		chByTitle(Title pTitle)
 		throws WikiApiException
 	{
 		String searchString = pTitle.getWikiStyleTitle();
