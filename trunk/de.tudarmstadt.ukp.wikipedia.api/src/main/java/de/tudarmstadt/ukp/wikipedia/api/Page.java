@@ -203,10 +203,7 @@ chByTitle(Title pTitle)
         session.getTransaction().commit();
 
         if (pageId == null) {
-			throw new WikiP		
-		System.out.println(searchString);
-		System.out.println(getTitle().getRawTitleText());
-		
+			throw new WikiP			
         if (searchString != null&&redirect searchString differs from the page's name.
         if (searchString != null) {
             if (!s    /*
